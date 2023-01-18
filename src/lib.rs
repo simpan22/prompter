@@ -2,7 +2,7 @@ pub mod keycodes;
 
 use keycodes::KeyCode;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct PromptReader {
     result: String,
     cursor: usize,
