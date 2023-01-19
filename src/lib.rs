@@ -9,6 +9,12 @@ pub struct PromptReader {
     done: bool,
 }
 
+impl Default for PromptReader {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PromptReader {
     /// Create a new PromptReader initialized with an empty placeholder.
     /// The cursor will be at the start of the string
@@ -25,7 +31,7 @@ impl PromptReader {
     pub fn new_with_placeholder(ph: &str, cursor_pos: Option<usize>) -> Self {
         PromptReader {
             result: ph.into(),
-            cursor: cursor_pos.unwrap_or_else(|| ph.len()),
+            cursor: cursor_pos.unwrap_or(ph.len()),
             done: false,
         }
     }
@@ -40,12 +46,12 @@ impl PromptReader {
                 } else {
                     self.result.insert(self.cursor, c);
                 }
-                self.cursor = self.cursor + 1;
+                self.cursor += self.cursor;
             }
             KeyCode::Backspace => {
                 if self.cursor != 0 {
                     self.result.remove(self.cursor - 1);
-                    self.cursor = self.cursor - 1;
+                    self.cursor -= 1;
                 }
             }
             KeyCode::Delete => {
@@ -55,12 +61,12 @@ impl PromptReader {
             }
             KeyCode::Left => {
                 if self.cursor != 0 {
-                    self.cursor = self.cursor - 1;
+                    self.cursor -= 1;
                 }
             }
             KeyCode::Right => {
                 if self.cursor >= self.result.len() - 1 {
-                    self.cursor = self.cursor + 1;
+                    self.cursor += 1;
                 }
             }
             KeyCode::Enter => {
@@ -68,6 +74,11 @@ impl PromptReader {
             }
             _ => {}
         }
+    }
+
+    /// Returns the position of the cursor with 0 being all the way to the left
+    pub fn cursor(&self) -> &usize {
+        &self.cursor
     }
 
     /// Returns true after enter has been sent to the next_key function.
@@ -87,6 +98,7 @@ mod tests {
 
     #[test]
     fn simple_string() {
+
         let mut pr = PromptReader::new();
         pr.next_key(KeyCode::Char('H'));
         pr.next_key(KeyCode::Char('e'));
