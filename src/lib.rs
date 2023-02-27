@@ -65,7 +65,7 @@ impl PromptReader {
                 }
             }
             KeyCode::Right => {
-                if self.cursor >= self.result.len() - 1 {
+                if self.cursor != self.result.len() {
                     self.cursor += 1;
                 }
             }
@@ -200,5 +200,23 @@ mod tests {
         pr.next_key(KeyCode::Char('j'));
 
         assert_eq!(pr.result(), "teHejst".to_string());
+    }
+
+    #[test]
+    fn end_of_string_remove() {
+        let mut pr = PromptReader::new();
+        pr.next_key(KeyCode::Char('H'));
+        pr.next_key(KeyCode::Char('e'));
+        pr.next_key(KeyCode::Char('j'));
+        pr.next_key(KeyCode::Right);
+        pr.next_key(KeyCode::Backspace);
+        assert_eq!(pr.result(), "He".to_string());
+
+        pr.next_key(KeyCode::Char('j'));
+        assert_eq!(pr.result(), "Hej".to_string());
+        pr.next_key(KeyCode::Left);
+        pr.next_key(KeyCode::Char('o'));
+
+        assert_eq!(pr.result(), "Heoj".to_string());
     }
 }
