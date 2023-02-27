@@ -46,7 +46,7 @@ impl PromptReader {
                 } else {
                     self.result.insert(self.cursor, c);
                 }
-                self.cursor += self.cursor;
+                self.cursor += 1;
             }
             KeyCode::Backspace => {
                 if self.cursor != 0 {
